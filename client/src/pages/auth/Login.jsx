@@ -1,10 +1,11 @@
 import CommonForm from '@/components/common/CommonForm'
 import { loginFormControls } from '@/config'
-import { useToast } from '@/hooks/use-toast'
 import { loginUser } from '@/store/auth-slice'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
+import {  toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
 
@@ -13,7 +14,6 @@ const Login = () => {
         email : '',
         password : ''
     }
-    const {toast} = useToast();
 
     const [formData, setFormData] = useState( initialState);
     const dispatch = useDispatch();
@@ -23,16 +23,27 @@ const Login = () => {
 
         dispatch(loginUser(formData)).then((data) =>{
             if(data?.payload?.success){
-                toast({
-                    title : "Login Successful",
-                    description : data.payload.message
-                })
+                toast.success(data.payload.message, {
+                    position: "top-right",
+                    autoClose: 4000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    });
             }else{
-                toast({
-                    title : "Login failed",
-                    description : data.payload.message,
-                    variant : 'destructive'
-                })
+                toast.error(data.payload.message, {
+                    position: "top-right",
+                    autoClose: 4000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    });
             }
         })
     }

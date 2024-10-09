@@ -1,21 +1,52 @@
 import CommonForm from '@/components/common/CommonForm'
 import { registerFormControls } from '@/config'
+import { registerUser } from '@/store/auth-slice'
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
+import {  toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+const initialState = {
+    userName : '',
+    email : '',
+    password : ''
+}
 const Register = () => {
-
-
-    const initialState = {
-        userName : '',
-        email : '',
-        password : ''
-    }
 
     const [formData, setFormData] = useState( initialState)
 
-    const onSubmit = () =>{
-        console.log("hello");
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const onSubmit = (e) =>{
+        e.preventDefault();
+        dispatch(registerUser(formData)).then((data)=>{
+            if(data?.payload?.success){
+                toast.success(data.payload.message, {
+                    position: "top-right",
+                    autoClose: 4000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    });
+                navigate('/auth/login');
+            }else{
+                toast.error(data.payload.message, {
+                    position: "top-right",
+                    autoClose: 4000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    });
+            }
+        });
     }
 
   return (
