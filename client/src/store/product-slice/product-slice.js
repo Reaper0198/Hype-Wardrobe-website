@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 const initialState = {
     isLoading : false,
@@ -22,7 +23,7 @@ export const fetchAllProducts = createAsyncThunk('/products/fetchAllProducts', a
 })
 
 // edit a product
-export const editAProduct = createAsyncThunk('/products/editproduct', async (id, formData)=>{
+export const editAProduct = createAsyncThunk('/products/editproduct', async ({id, formData})=>{
     const result = await axios.put(`http://localhost:5000/api/admin/products/edit/${id}`, formData, {
         headers : {
             'Content-Type' : 'application/json'
@@ -46,8 +47,9 @@ const AdminProductSlice = createSlice({
             state.isLoading = true
         }
         ).addCase(fetchAllProducts.fulfilled, (state, action)=>{
-            state.isLoading = false,
-            state.productList = action.payload
+            //console.log('action.payload',action.payload)
+           state.isLoading = false,
+            state.productList = action.payload.data
         }
         ).addCase(fetchAllProducts.rejected, (state, action)=>{
             state.isLoading = false,

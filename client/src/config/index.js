@@ -74,8 +74,8 @@ export const addProductFormElements = [
             {id : "adidas", label : "Adidas"},
             {id : "puma", label : "Puma"},
             {id : "levi", label : "Levi's"},
-            {id : "zara", label : "Zara"},
             {id : "h&m", label : "H&M"},
+            {id : "Other", label : "Other"}
         ],
     },
     {
@@ -87,7 +87,7 @@ export const addProductFormElements = [
     },
     {
         label : "Sale Price",
-        name : 'salePrice',
+        name : 'salesPrice',
         componentType : 'input',
         type : "number",
         placeholder : 'Enter sale price (optional)'
@@ -99,4 +99,33 @@ export const addProductFormElements = [
         type : "number",
         placeholder : 'Enter total stock'
     },
+]
+
+
+export const shoppingViewHeaderMenuItems = [
+    {
+        id : 'home',
+        label : 'Home',
+        path : '/shop/home'
+    },
+    {
+        id : 'men',
+        label : 'Men',
+        path : '/shop/listing'
+    },
+    {
+        id : 'women',
+        label : 'Women',
+        path : '/shop/listing'
+    },    
+    {
+        id : 'accessories',
+        label : 'Accessories',
+        path : '/shop/listing'
+    },
+    {
+        id : 'footwear',
+        label : 'Footwear',
+        path : '/shop/listing'
+    }
 ]

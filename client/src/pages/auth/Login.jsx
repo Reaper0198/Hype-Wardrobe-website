@@ -34,7 +34,7 @@ const Login = () => {
                     theme: "light",
                     });
             }else{
-                toast.error(data.payload.message, {
+                toast.error(data?.payload?.message, {
                     position: "top-right",
                     autoClose: 4000,
                     hideProgressBar: false,

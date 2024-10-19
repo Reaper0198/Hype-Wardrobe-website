@@ -18,7 +18,7 @@ import CheckAuth from './components/common/CheckAuth'
 import UnauthPage from './pages/unauth-page/UnauthPage'
 import { useDispatch, useSelector } from 'react-redux'
 import { checkAuth } from './store/auth-slice'
-import { ColorRing } from 'react-loader-spinner'
+
 
 const App = () => {
 
@@ -29,22 +29,6 @@ const App = () => {
         dispatch(checkAuth());
     }, [dispatch])
     
-    // if (isLoading) {
-    //     return (
-    //         <div className='w-screen h-screen flex justify-center items-center'>
-    //             <ColorRing
-    //                 visible={true}
-    //                 height="80"
-    //                 width="80"
-    //                 ariaLabel="color-ring-loading"
-    //                 wrapperStyle={{}}
-    //                 wrapperClass="color-ring-wrapper"
-    //                 colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
-    //             />
-    //         </div>
-    //     )
-    // }
-
     return (
         <div className='flex flex-col overflow-hidden bg-white'>
 

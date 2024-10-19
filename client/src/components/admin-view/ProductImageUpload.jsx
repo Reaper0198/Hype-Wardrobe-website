@@ -4,9 +4,10 @@ import { Input } from '../ui/input';
 import { CloudUpload, File, X } from 'lucide-react';
 import { Button } from '../ui/button';
 import axios from 'axios';
+import { ThreeDots } from 'react-loader-spinner'
 
 const ProductImageUpload = ({file, setFile, uploadedImageUrl, setUploadedImageUrl,
-    imageLoadingState, setImageLoadingState
+    imageLoadingState, setImageLoadingState,
 }) => {
 
     const inputRef = useRef();
@@ -71,7 +72,20 @@ const ProductImageUpload = ({file, setFile, uploadedImageUrl, setUploadedImageUr
                     className='flex flex-col items-center justify-center h-32 cursor-pointer '>
                     <CloudUpload className='w-10 h-10 text-muted-foreground mb-2'/>
                     <span>Drag & drop or Click to upload</span>
-                </Label> : <div className='flex items-center justify-between'>
+                </Label> : 
+                    ( imageLoadingState?            
+                        <div className='w-full h-full flex justify-center items-center'>
+                               <ThreeDots
+                                    visible={true}
+                                    height="40"
+                                    width="40"
+                                    color="#3d3f41"
+                                    radius="9"
+                                    ariaLabel="three-dots-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClass=""
+                                    /></div>:
+                    <div className='flex items-center justify-between'>
                                 <div className='flec items-center'>
                                 <File  className='w-5 text-primary mr-2 h-5'/>
                                 </div>
@@ -82,7 +96,7 @@ const ProductImageUpload = ({file, setFile, uploadedImageUrl, setUploadedImageUr
                                 ><X className='w-4 h-4'/></Button>
                                 <span className='sr-only'>Remove file</span>
                             </div>
-            }
+            )}
         </div>
     </div>
   )

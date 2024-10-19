@@ -27,16 +27,17 @@ const handleImageUpload = async (req, res) => {
 const addProduct = async (req, res) => {
     try {
 
-        const { image, title, description, category, brand, price, salePrice, totalStock } = req.body;
+        const { image, title, description, category, brand, price, salesPrice, totalStock } = req.body;
         
         const newProduct = new Product({
-            image, title, description, category, brand, price, salePrice, totalStock
+            image, title, description, category, brand, price, salesPrice, totalStock
         })
 
         await newProduct.save();
         res.status(201).json({
             success : true,
-            data : newProduct
+            data : newProduct,
+            message : "New product added successfully"
         })
 
     } catch (error) {
@@ -71,8 +72,8 @@ const editProduct = async (req, res) => {
     try {
 
         const {id} = req.params;
-        const { image, title, description, category, brand, price, salePrice, totalStock } = req.body;
-        const findProduct = await Product.findById(id);
+        const { image, title, description, category, brand, price, salesPrice, totalStock } = req.body;
+        let findProduct = await Product.findById(id);
         if(!findProduct){
             return res.status(404).json({
                 success : false,
@@ -84,8 +85,8 @@ const editProduct = async (req, res) => {
             findProduct.description = description || findProduct.description;    
             findProduct.category = category || findProduct.category;
             findProduct.brand = brand || findProduct.brand;
-            findProduct.price = price || findProduct.price;
-            findProduct.salesPrice = salePrice || findProduct.salesPrice;
+            findProduct.price = price=== ''? 0 : price || findProduct.price;
+            findProduct.salesPrice = salesPrice=== ''? 0 : salesPrice || findProduct.salesPrice;
             findProduct.totalStock = totalStock || findProduct.totalStock;
     
             await Product.findByIdAndUpdate(id, findProduct);

@@ -81,6 +81,7 @@ const AdminSidebar = ({open, setOpen}) => {
                 </div>
                 <MenuItems />
             </aside>
+            
         </Fragment>
 
     )
