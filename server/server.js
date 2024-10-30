@@ -5,6 +5,7 @@ const cors = require("cors");
 const authRouter = require ('./routes/auth-routes')
 require('dotenv').config();
 const adminProductsRouter = require('./routes/admin/products-routes')
+const shopProductRouter = require('./routes/shop/shop-products-routes')
 
 mongoose.connect('mongodb+srv://kmtyagi198:kmtyagi198!@cluster0.bsx51.mongodb.net/'
 ).then(()=>console.log("MongoDB connected...")).catch(error=>console.log(error));
@@ -33,5 +34,6 @@ app.use(express.json());
 
 app.use('/api/auth', authRouter)
 app.use('/api/admin/products', adminProductsRouter);
+app.use('/api/shop/products', shopProductRouter);
 
 app.listen(PORT, ()=> console.log(`Server is running on port ${PORT}`))
