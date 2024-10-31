@@ -1,3 +1,4 @@
+import ProductDetailsDialog from '@/components/shopping-view/ProductDetailsDialog'
 import ProductFilter from '@/components/shopping-view/ProductFilter'
 import ShopingProductCard from '@/components/shopping-view/ShopingProductCard'
 import { Button } from '@/components/ui/button'
@@ -13,14 +14,16 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 
 const ShoppingListing = () => {
-
+    
     const dispatch = useDispatch();
     const {productList, productDetails} = useSelector(state=> state.shopProducts)
     const [sort, setSort] = useState(null);
-
-
-
-
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [selectedBrands, setSelectedBrands] = useState([]);
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+    
     function handleSort(value){
         setSort(value);
     }
@@ -29,14 +32,6 @@ const ShoppingListing = () => {
         setSort("price-lowtohigh")    
     },[])
 
-    const navigate = useNavigate();
-    const location = useLocation();
-  
-    // Initialize state for filters
-    const [selectedBrands, setSelectedBrands] = useState([]);
-    const [selectedCategories, setSelectedCategories] = useState([]);
-  
-    // Parse query parameters on component load
     useEffect(() => {
       const params = new URLSearchParams(location.search);
       const brands = params.get("brands") ? params.get("brands").split(",") : [];
@@ -45,7 +40,6 @@ const ShoppingListing = () => {
       setSelectedCategories(categories);
     }, [location.search]);
   
-    // Handle brand selection
     const handleBrandChange = (brand) => {
       const newBrands = selectedBrands.includes(brand)
         ? selectedBrands.filter(b => b !== brand)
@@ -54,7 +48,6 @@ const ShoppingListing = () => {
       updateURL(newBrands, selectedCategories);
     };
   
-    // Handle category selection
     const handleCategoryChange = (category) => {
       const newCategories = selectedCategories.includes(category)
         ? selectedCategories.filter(c => c !== category)
@@ -63,7 +56,6 @@ const ShoppingListing = () => {
       updateURL(selectedBrands, newCategories);
     };
   
-    // Update the URL query parameters based on filter state
     const updateURL = (brands, categories) => {
       const params = new URLSearchParams();
       if (brands.length) params.set("brands", brands.join(","));
@@ -78,25 +70,33 @@ const ShoppingListing = () => {
                 brandParams: selectedBrands,
                 sortParams: sort}))
             console.log('selectedBrands', selectedBrands)
-};
+    };
     }, [dispatch, selectedBrands, selectedCategories, sort])
 
-const handleGetProductDetails = (id) =>{
-    console.log('id', id)
-    dispatch(fetchProductDetails(id))
-}
-console.log('productDetails', productDetails)
+    const handleGetProductDetails = (id) =>{
+        dispatch(fetchProductDetails(id))
+    }
+    //console.log('productDetails', productDetails)
+
+    useEffect(()=>{
+        if(productDetails !== null){
+            setOpenDetailsDialog(true);
+        }
+    },[productDetails])
 
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-[200px_1fr]'>
         <div className='w-[250px]'>
-
         <ProductFilter selectedBrands={selectedBrands} 
             selectedCategories={selectedCategories}
             handleBrandChange={handleBrandChange}
             handleCategoryChange={handleCategoryChange}/>
         </div>
+        <ProductDetailsDialog  
+            open={openDetailsDialog}
+            setOpen={setOpenDetailsDialog}
+            productDetails={productDetails}/>
         <div className=' bg-background w-full rounded-lg shadow-sm'>
             <div className='p-4 border-b flex items-center justify-between mb-2'>
                 <h2 className='text-lg font-bold'>All Products</h2>
