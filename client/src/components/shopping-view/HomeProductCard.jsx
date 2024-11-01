@@ -1,16 +1,15 @@
 import React from 'react'
+import { Card, CardContent } from '../ui/card'
 import { Badge } from '../ui/badge'
-import { Card, CardContent, CardFooter } from '../ui/card'
-import { Button } from '../ui/button'
-import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
-const ShopingProductCard = ({product, handleGetProductDetails, handleAddToCart}) => {
+const HomeProductCard = ({product, handleGetProductDetails}) => {
 
-
+    const navigate = useNavigate();
 
   return (
     <Card className='w-[350px] md:w-full mx-auto m-2'>
-        <div onClick={()=> handleGetProductDetails(product?._id)}>
+        <div onClick={()=> handleGetProductDetails(product._id)}>
             <div className='relative'>
                 <img src={product?.image} alt={product?.image} className='w-full h-[300px] object-cover rounded-t-lg' />
                 {
@@ -34,24 +33,8 @@ const ShopingProductCard = ({product, handleGetProductDetails, handleAddToCart})
                 </div>
             </CardContent>
         </div>
-            <CardFooter className='p-1 m-1'>
-                <div className='w-full '>
-                    <Button onClick={()=> {handleAddToCart(product?._id)
-                                        toast.success("Product added to the cart", {
-                                            position: "top-right",
-                                            autoClose: 1500,
-                                            hideProgressBar: false,
-                                            closeOnClick: true,
-                                            pauseOnHover: false,
-                                            draggable: true,
-                                            progress: undefined,
-                                            theme: "light",
-                                            });
-                    }} className='w-full'>Add to Card</Button>
-                </div>
-            </CardFooter>
     </Card>
   )
 }
 
-export default ShopingProductCard
+export default HomeProductCard

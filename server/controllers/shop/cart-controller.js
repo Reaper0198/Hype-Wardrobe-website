@@ -38,7 +38,7 @@ const addToCart = async(req, res) =>{
 
         await cart.save();
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             data : cart,
             message : "product added to cart successfully"
@@ -65,7 +65,7 @@ const fetchCartItems = async(req, res) =>{
         }
 
         const cart = await Cart.findOne({userId}).populate({
-            path : 'item.productId',
+            path : 'items.productId',
             select : 'image title price salesPrice'
         })
 
@@ -141,7 +141,7 @@ const UpdateCartItemQty = async(req, res) =>{
         await cart.save();
 
         await cart.populate({
-            path : 'item.productId',
+            path : 'items.productId',
             select : 'image title price salesPrice'
         })
 
@@ -184,7 +184,7 @@ const deleteCartItem = async(req, res) =>{
         }
 
         const cart = await Cart.findOne({userId}).populate({
-            path : 'item.productId',
+            path : 'items.productId',
             select : 'image title price salesPrice'
         })
         if(!cart){
@@ -198,8 +198,8 @@ const deleteCartItem = async(req, res) =>{
 
         await cart.save();
 
-        await Cart.populate({
-            path : 'item.productId',
+        await cart.populate({
+            path : 'items.productId',
             select : 'image title price salesPrice'
         })
 
@@ -224,7 +224,7 @@ const deleteCartItem = async(req, res) =>{
         console.log('error', e)
         res.status(500).json({
             success: false,
-            message : "fail to add the product to the cart"
+            message : "fail to remove the product"
         })
     }
 }

@@ -5,17 +5,43 @@ import { Separator } from '../ui/separator'
 import { Avatar, AvatarFallback } from '../ui/avatar'
 import { StarIcon } from 'lucide-react'
 import { Input } from '../ui/input'
+import { addToCart, fetchCartItems } from '@/store/shop-slice/cart-slice'
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+import { setProductDetails } from '@/store/shop-slice/shop-slice'
 
 const ProductDetailsDialog = ({open, setOpen, productDetails}) => {
+
+    const dispatch = useDispatch();
+    const {user} = useSelector(state=>state.auth);
+
+    function handleAddToCart(id){
+        dispatch(addToCart({
+            userId : user?.id,
+            productId : id,
+            quantity : 1
+        })).then(data => {
+            if(data?.payload.success){
+                dispatch(fetchCartItems(user?.id))
+            }})
+    }
+
+    function handleDialogClose(){
+        setOpen(false);
+        dispatch(setProductDetails())
+    }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className='grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[70vw]'>
-            <div className='relative overflow-hidden rounded-lg'>
+    <Dialog open={open} onOpenChange={handleDialogClose}>
+        <DialogContent className='max-w-[90vw] sm:max-w-[80vw] lg:max-w-[80vw]'>
+        <div className='flex flex-col md:flex-row gap-8 sm:p-12 max-h-[90vh]'>
+
+            <div className='flex-1 relative overflow-clip max-sm:max-h-[300px] w-[300px] md:h-[400px] md:w-[400px] rounded-lg mt-2'>
                 <img src={productDetails?.image} alt={productDetails?.title}
-                    height={600} width={600}
-                    className='aspect-square w-full object-cover' />
+                    height={400} width={400}
+                    className='aspect-square w-full object-cover rounded-lg' />
             </div>
-            <div className=''>
+            <div className='flex-1 overflow-y-scroll pr-4'>
                 <div>
                     <h1 className='text-3xl font-extrobold'>{productDetails?.title}</h1>
                     <p className='text-muted-foreground text-xl mb-5 mt-3'>{productDetails?.description}</p>
@@ -36,7 +62,18 @@ const ProductDetailsDialog = ({open, setOpen, productDetails}) => {
                 {productDetails?.salesPrice > 0 ? <p className='text-2xl font-semibold font-muted-foreground'>₹{productDetails?.salesPrice}</p> : null }
                 </div>
                 <div className='my-5'>
-                    <Button className='w-full text-xl font-medium'>Add to Cart</Button>
+                    <Button onClick={()=> {handleAddToCart(productDetails?._id);
+                                            toast.success("Product added to the cart", {
+                                            position: "top-right",
+                                            autoClose: 1500,
+                                            hideProgressBar: false,
+                                            closeOnClick: true,
+                                            pauseOnHover: false,
+                                            draggable: true,
+                                            progress: undefined,
+                                            theme: "light",
+                                            })}}
+                    className='w-full text-xl font-medium'>Add to Cart</Button>
                 </div>
                 <Separator />
                 <div className='max-h-[300px] overflow-auto'>
@@ -102,6 +139,7 @@ const ProductDetailsDialog = ({open, setOpen, productDetails}) => {
                         <Button>Submit</Button>
                     </div>
                 </div>
+            </div>
             </div>
         </DialogContent>
     </Dialog>

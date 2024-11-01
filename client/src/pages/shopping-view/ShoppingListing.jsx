@@ -4,6 +4,7 @@ import ShopingProductCard from '@/components/shopping-view/ShopingProductCard'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { sortOptions } from '@/config'
+import { addToCart, fetchCartItems } from '@/store/shop-slice/cart-slice'
 import { fetchAllFilteredProducts, fetchProductDetails } from '@/store/shop-slice/shop-slice'
 import { ArrowUpDownIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
@@ -11,19 +12,18 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 
-
-
 const ShoppingListing = () => {
     
     const dispatch = useDispatch();
     const {productList, productDetails} = useSelector(state=> state.shopProducts)
+    const {user} = useSelector(state=> state.auth);
     const [sort, setSort] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
     const [selectedBrands, setSelectedBrands] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
-    
+
     function handleSort(value){
         setSort(value);
     }
@@ -45,6 +45,7 @@ const ShoppingListing = () => {
         ? selectedBrands.filter(b => b !== brand)
         : [...selectedBrands, brand];
       setSelectedBrands(newBrands);
+      sessionStorage.setItem('brand', selectedBrands);
       updateURL(newBrands, selectedCategories);
     };
   
@@ -53,6 +54,7 @@ const ShoppingListing = () => {
         ? selectedCategories.filter(c => c !== category)
         : [...selectedCategories, category];
       setSelectedCategories(newCategories);
+      sessionStorage.setItem('category', selectedCategories);
       updateURL(selectedBrands, newCategories);
     };
   
@@ -69,14 +71,12 @@ const ShoppingListing = () => {
                 categoryParams: selectedCategories,
                 brandParams: selectedBrands,
                 sortParams: sort}))
-            console.log('selectedBrands', selectedBrands)
     };
     }, [dispatch, selectedBrands, selectedCategories, sort])
 
     const handleGetProductDetails = (id) =>{
         dispatch(fetchProductDetails(id))
     }
-    //console.log('productDetails', productDetails)
 
     useEffect(()=>{
         if(productDetails !== null){
@@ -84,6 +84,16 @@ const ShoppingListing = () => {
         }
     },[productDetails])
 
+    function handleAddToCart(id){
+        dispatch(addToCart({
+            userId : user?.id,
+            productId : id,
+            quantity : 1
+        })).then(data => {
+            if(data?.payload.success){
+                dispatch(fetchCartItems(user?.id))
+            }})
+    }
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-[200px_1fr]'>
@@ -121,12 +131,13 @@ const ShoppingListing = () => {
                 </DropdownMenu>
                 </div>
             </div>
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mx-auto'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mx-auto pr-2'>
                 {
                     productList && productList.length > 0 ? 
                     productList.map(productItem => (<div key={productItem._id} className='mx-auto'>
                         <ShopingProductCard  product={productItem}
-                        handleGetProductDetails={handleGetProductDetails}/></div>)) : null
+                        handleGetProductDetails={handleGetProductDetails}
+                        handleAddToCart={handleAddToCart}/></div>)) : null
                         
                 }
             </div>

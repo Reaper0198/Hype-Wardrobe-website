@@ -1,5 +1,5 @@
 import { LogOut, Menu, Shirt, ShoppingCart, UserRound } from 'lucide-react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 import { Button } from '../ui/button'
@@ -8,18 +8,36 @@ import { shoppingViewHeaderMenuItems } from '@/config'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '../ui/avatar'
 import { logoutUser } from '@/store/auth-slice'
+import UserCartWrapper from './UserCartWrapper'
+import { fetchCartItems } from '@/store/shop-slice/cart-slice'
+import { Label } from '../ui/label'
 
 
 
 
 function MenuItems(){
+
+    const navigate = useNavigate();
+
+    function handleNavigate(category){
+        console.log('category', category)
+        if(category !== 'home'){
+            const queryParams = new URLSearchParams();
+            queryParams.set('categories', category);
+            navigate(`/shop/listing?${queryParams.toString()}`);
+        }else{
+            navigate('/shop/home')
+        }
+    }
+
     return (
         <nav className='flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row'>
             {
                 shoppingViewHeaderMenuItems.map(menuItem => 
-                <Link className='text-sm font-semibold' key={menuItem.id} to={menuItem.path}>
+                <Label onClick={()=>handleNavigate(menuItem.id)}
+                 className='text-sm font-semibold' key={menuItem.id}>
                     {menuItem.label}
-                </Link>)
+                </Label>)
             }
         </nav>
     );
@@ -30,17 +48,28 @@ function HeaderRightContent(){
     const {user} = useSelector(state=>state.auth);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [openCartSheet, setOpenCartSheet] =  useState(false);
+    const {cartItems} = useSelector(state => state.shopCart)
 
     function handleLogout(){
         dispatch(logoutUser());
     }
 
+    useEffect(()=>{
+        dispatch(fetchCartItems(user.id))
+    },[dispatch])
+
+    //console.log('cartItems', cartItems);
+
     return (
         <div className="flex lg:items-center lg:flex-row flex-col gap-4">
-            <Button variant='outline' size='icon'>
-                <ShoppingCart  className='h-5 w-5'/>
-                <span className='sr-only'>User Cart</span>
-            </Button>
+            <Sheet open={openCartSheet} onOpenChange={()=> setOpenCartSheet(false)}>
+                <Button onClick={()=> setOpenCartSheet(true)} variant='outline' size='icon'>
+                    <ShoppingCart  className='h-5 w-5'/>
+                    <span className='sr-only'>User Cart</span>
+                </Button>
+                <UserCartWrapper  cartItems={cartItems ? cartItems : {}}/>
+            </Sheet>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Avatar className='bg-black'>
