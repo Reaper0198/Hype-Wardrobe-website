@@ -6,12 +6,14 @@ import { Textarea } from '../ui/textarea';
 import React from 'react'
 import { Button } from '../ui/button';
 
-const CommonForm = ({formControls, formData, setFormData, onSubmit, buttonText}) => {
+const CommonForm = ({formControls, formData, setFormData, onSubmit, buttonText, isBtnDisabled}) => {
 
     const renderInputsByComponentType = (getControlItem)=>{
         let element = null;
 
         const value = formData[getControlItem.name] || ''
+
+    
 
         switch(getControlItem.componentType){
             case 'input' :
@@ -76,6 +78,7 @@ const CommonForm = ({formControls, formData, setFormData, onSubmit, buttonText})
         return element;
     }
 
+
   return (
     <form onSubmit={onSubmit}>
         <div className='flex flex-col gap-3'>
@@ -88,7 +91,8 @@ const CommonForm = ({formControls, formData, setFormData, onSubmit, buttonText})
                 </div>)
             }
         </div>
-        <Button type="submit" className='mt-2 w-full text-lg'>{buttonText || 'Submit'}</Button>
+        <Button disabled={isBtnDisabled}
+        type="submit" className='mt-2 w-full text-lg'>{buttonText || 'Submit'}</Button>
     </form>
   )
 }

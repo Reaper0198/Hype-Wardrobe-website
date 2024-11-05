@@ -25,10 +25,10 @@ const Login = () => {
             if(data?.payload?.success){
                 toast.success(data.payload.message, {
                     position: "top-right",
-                    autoClose: 4000,
+                    autoClose: 1500,
                     hideProgressBar: false,
                     closeOnClick: true,
-                    pauseOnHover: true,
+                    pauseOnHover: false,
                     draggable: true,
                     progress: undefined,
                     theme: "light",
@@ -36,10 +36,10 @@ const Login = () => {
             }else{
                 toast.error(data?.payload?.message, {
                     position: "top-right",
-                    autoClose: 4000,
+                    autoClose: 1500,
                     hideProgressBar: false,
                     closeOnClick: true,
-                    pauseOnHover: true,
+                    pauseOnHover: false,
                     draggable: true,
                     progress: undefined,
                     theme: "light",

@@ -20,7 +20,6 @@ function MenuItems(){
     const navigate = useNavigate();
 
     function handleNavigate(category){
-        console.log('category', category)
         if(category !== 'home'){
             const queryParams = new URLSearchParams();
             queryParams.set('categories', category);
@@ -68,7 +67,9 @@ function HeaderRightContent(){
                     <ShoppingCart  className='h-5 w-5'/>
                     <span className='sr-only'>User Cart</span>
                 </Button>
-                <UserCartWrapper  cartItems={cartItems ? cartItems : {}}/>
+                <UserCartWrapper  
+                    setOpenCartSheet={setOpenCartSheet}
+                    cartItems={cartItems ? cartItems : {}}/>
             </Sheet>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>

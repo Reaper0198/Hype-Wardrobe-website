@@ -3,9 +3,11 @@ import { SheetContent, SheetHeader, SheetTitle } from '../ui/sheet'
 import { Button } from '../ui/button'
 import UserCartItemContent from './UserCartItemContent'
 import { Separator } from '../ui/separator'
+import { useNavigate } from 'react-router-dom'
 
-const UserCartWrapper = ({ cartItems }) => {
+const UserCartWrapper = ({ cartItems, setOpenCartSheet }) => {
     //console.log('cartItems', cartItems)
+    const navigate = useNavigate();
 
     const totalCartAmt = cartItems && cartItems.items && cartItems.items.length > 0 ? 
     cartItems.items.reduce((sum, currItem) => sum + 
@@ -35,7 +37,11 @@ const UserCartWrapper = ({ cartItems }) => {
                         <span className='font-semibold'>₹{totalCartAmt}</span>
                     </div>
                 </div>
-                <Button className='w-full mt-4 text-lg font-medium my-2'>Proceed to Checkout</Button>
+                <Button onClick={()=> {navigate('/shop/checkout');
+                    setOpenCartSheet(false);
+                }}
+                    className='w-full mt-4 text-lg font-medium my-2'>Proceed to Checkout
+                </Button>
             
         </SheetContent>
     )

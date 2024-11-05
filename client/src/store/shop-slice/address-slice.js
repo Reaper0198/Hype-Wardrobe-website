@@ -52,12 +52,10 @@ const addressSlice = createSlice({
             state.isLoading = true
         }
         ).addCase(addNewAddress.fulfilled, (state, action)=>{
-            state.isLoading = false,
-            state.addressList = action.payload.data
+            state.isLoading = false
         }
         ).addCase(addNewAddress.rejected, (state)=>{
             state.isLoading = false
-            state.addressList = []
         }
         ).addCase(fetchAllAddress.pending, (state)=>{
             state.isLoading = true
