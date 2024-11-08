@@ -22,7 +22,7 @@ const Address = ({setCurSelectedAddress, curSelectedAddress}) => {
     const dispatch = useDispatch();
     const {user} = useSelector(state => state.auth);
     const {addressList} = useSelector(state => state.shopAddress)
-    const [curEditAddressId, setCurEditAddressId] = useState();
+    const [curEditAddressId, setCurEditAddressId] = useState(null);
 
     function handleManageAddress(event){
         event.preventDefault();
