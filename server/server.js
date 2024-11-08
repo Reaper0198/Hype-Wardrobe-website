@@ -19,9 +19,20 @@ mongoose.connect(process.env.MONGO_URL
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const allowedOrigins = [
+    'https://hype-wardrobe-website-frontend.onrender.com', // Deployed frontend URL
+    'http://localhost:5173' // Local development URL (if needed)
+  ];
+
 app.use(
     cors({
-        origin : process.env.CLIENT_BASE_URL,
+        origin : function (origin, callback) {
+            if (!origin || allowedOrigins.includes(origin)) {
+              callback(null, true);
+            } else {
+              callback(new Error('Not allowed by CORS'));
+            }
+          },
         methods : ['GET', 'POST', 'DELETE', 'PUT'],
         allowedHeaders : [
             "Content-Type",
