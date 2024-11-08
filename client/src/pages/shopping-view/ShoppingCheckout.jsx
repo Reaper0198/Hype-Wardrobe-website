@@ -25,7 +25,6 @@ const ShoppingCheckout = () => {
 
     function handleInitiatePayment(){
 
-
         if(curSelectedAddress === null){
             toast.info(" Please select a address first", {
                 position: "top-right",
@@ -70,7 +69,6 @@ const ShoppingCheckout = () => {
         
         dispatch(createNewOrder(orderData))
             .then(data=>{
-                console.log('data', data)
                 if(data.payload.success){
                     setIsPaymentStart(true);
                 }else{
@@ -79,7 +77,7 @@ const ShoppingCheckout = () => {
             })
 
         if(approvalURL){
-            window.location.href = approvalURL;
+            window.location.href = approvalURL.href;
         }
 
     }
