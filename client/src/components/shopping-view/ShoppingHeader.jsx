@@ -20,12 +20,12 @@ function MenuItems(){
     const navigate = useNavigate();
 
     function handleNavigate(category){
-        if(category !== 'home'){
+        if(category !== 'home' && category !== 'search'){
             const queryParams = new URLSearchParams();
             queryParams.set('categories', category);
             navigate(`/shop/listing?${queryParams.toString()}`);
         }else{
-            navigate('/shop/home')
+            navigate(`/shop/${category}`);
         }
     }
 

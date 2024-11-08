@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Dialog, DialogContent } from '../ui/dialog'
 import { Button } from '../ui/button'
 import { Separator } from '../ui/separator'
@@ -9,11 +9,14 @@ import { addToCart, fetchCartItems } from '@/store/shop-slice/cart-slice'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { setProductDetails } from '@/store/shop-slice/shop-slice'
+import StarRatingComp from '../common/StarRatingComp'
+import { Label } from '../ui/label'
 
 const ProductDetailsDialog = ({open, setOpen, productDetails}) => {
 
     const dispatch = useDispatch();
     const {user} = useSelector(state=>state.auth);
+    const [reviewMsg, setReviewMsg] = useState('');
 
     function handleAddToCart(id){
         dispatch(addToCart({
@@ -24,6 +27,21 @@ const ProductDetailsDialog = ({open, setOpen, productDetails}) => {
             if(data?.payload.success){
                 dispatch(fetchCartItems(user?.id))
             }})
+    }
+
+    function handleReviewSubmit(){
+        toast.info("Only bought products can be reviewed", {
+            position: "top-right",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            }
+
+        )
     }
 
     function handleDialogClose(){
@@ -78,6 +96,18 @@ const ProductDetailsDialog = ({open, setOpen, productDetails}) => {
                 <Separator />
                 <div className='max-h-[300px] overflow-auto'>
                     <h2 className='text-xl font-bold mb-4'>Reviews</h2>
+                    <div className='mt-2 flex-col gap-4 px-2'>
+                        <Label className='text-lg'>Share your review</Label>
+                        <div className='flex mb-2'>
+                            <StarRatingComp 
+                                rating={3}/>
+                        </div>
+                        <div className='flex gap-2 pb-2'>
+                            <Input placeholder='Write a review...' value={reviewMsg}
+                                onChange={(event)=> setReviewMsg(event.target.value)}/>
+                            <Button onClick={()=>handleReviewSubmit()}>Submit</Button>
+                        </div>
+                    </div>
                     <div className='grid gap-6'>
                         <div className='flex gap-4'>
                             <Avatar className='w-10 h-10 border'>
@@ -99,11 +129,11 @@ const ProductDetailsDialog = ({open, setOpen, productDetails}) => {
                         </div>
                         <div className='flex gap-4'>
                             <Avatar className='w-10 h-10 border'>
-                                <AvatarFallback>TH</AvatarFallback>
+                                <AvatarFallback>JC</AvatarFallback>
                             </Avatar>
                             <div className='grid gap-1'>
                                 <div className='flex items-center gap-2'>
-                                    <h3 className='font-semibold'>Tris Hemsworth</h3>
+                                    <h3 className='font-semibold'>John Cena</h3>
                                 </div>
                                 <div className='flex items-center gap-0.5'>
                                     <StarIcon className='h-5 w-5 fill-primary'/>
@@ -117,11 +147,11 @@ const ProductDetailsDialog = ({open, setOpen, productDetails}) => {
                         </div>
                         <div className='flex gap-4'>
                             <Avatar className='w-10 h-10 border'>
-                                <AvatarFallback>FH</AvatarFallback>
+                                <AvatarFallback>TH</AvatarFallback>
                             </Avatar>
                             <div className='grid gap-1'>
                                 <div className='flex items-center gap-2'>
-                                    <h3 className='font-semibold'>Fhris Hemsworth</h3>
+                                    <h3 className='font-semibold'>Tom Holland</h3>
                                 </div>
                                 <div className='flex items-center gap-0.5'>
                                     <StarIcon className='h-5 w-5 fill-primary'/>
@@ -134,10 +164,7 @@ const ProductDetailsDialog = ({open, setOpen, productDetails}) => {
                             </div>
                         </div>
                     </div>
-                    <div className='mt-6 flex gap-2 p-1'>
-                        <Input placeholder='Write a review...'/>
-                        <Button>Submit</Button>
-                    </div>
+
                 </div>
             </div>
             </div>

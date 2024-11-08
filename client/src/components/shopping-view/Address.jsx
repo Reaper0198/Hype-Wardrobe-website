@@ -16,7 +16,7 @@ const initialAddressFormData = {
 }
 
 
-const Address = ({setCurSelectedAddress}) => {
+const Address = ({setCurSelectedAddress, curSelectedAddress}) => {
 
     const [formData, setFormData] = useState(initialAddressFormData);
     const dispatch = useDispatch();
@@ -111,7 +111,8 @@ const Address = ({setCurSelectedAddress}) => {
                             addressInfo={singleAddress}
                             handleDeleteAddress={handleDeleteAddress}
                             handleEditAddress={handleEditAddress}
-                            setCurSelectedAddress={setCurSelectedAddress}/>
+                            setCurSelectedAddress={setCurSelectedAddress}
+                            curSelectedAddress={curSelectedAddress}/>
                     ) : null
                 }
             </div>

@@ -18,6 +18,8 @@ import CheckAuth from './components/common/CheckAuth'
 import UnauthPage from './pages/unauth-page/UnauthPage'
 import { useDispatch, useSelector } from 'react-redux'
 import { checkAuth } from './store/auth-slice'
+import { Skeleton } from './components/ui/skeleton'
+import ShoppingSearch from './pages/shopping-view/ShoppingSearch'
 
 
 const App = () => {
@@ -28,6 +30,8 @@ const App = () => {
     useEffect(() => {
         dispatch(checkAuth());
     }, [dispatch])
+
+
     
     return (
         <div className='flex flex-col overflow-hidden bg-white'>
@@ -60,6 +64,7 @@ const App = () => {
                     <Route path='listing' element={<ShoppingListing />} />
                     <Route path='checkout' element={<ShoppingCheckout />} />
                     <Route path='account' element={<ShoppingAccount />} />
+                    <Route path='search' element={<ShoppingSearch />} />
                 </Route>
 
                 <Route path='/unauth-page' element={<UnauthPage />} />

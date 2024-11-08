@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { createNewOrder } from '@/store/shop-slice/order-slice'
+import { toast } from 'react-toastify'
 
 const ShoppingCheckout = () => {
 
@@ -21,7 +22,24 @@ const ShoppingCheckout = () => {
         cartItems.items.reduce((sum, currItem) => sum +
             (currItem?.salesPrice > 0 ? currItem?.salesPrice : currItem?.price) * currItem?.quantity, 0) : 0
 
+
     function handleInitiatePayment(){
+
+
+        if(curSelectedAddress === null){
+            toast.info(" Please select a address first", {
+                position: "top-right",
+                autoClose: 1500,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                })
+
+            return ;
+        }
 
         const orderData = {
             userId : user?.id,
@@ -74,7 +92,8 @@ const ShoppingCheckout = () => {
             </div>
             <div className='flex flex-col-reverse md:flex-row gap-5 mt-5 p-5'>
                 <div className='flex-1'>
-                    <Address  setCurSelectedAddress={setCurSelectedAddress}/>
+                    <Address  setCurSelectedAddress={setCurSelectedAddress}
+                        curSelectedAddress={curSelectedAddress}/>
                 </div>
                 <Card className='h-fit flex-1'>
                     <CardContent>
