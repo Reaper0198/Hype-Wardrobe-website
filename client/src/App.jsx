@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import AuthLayout from './components/auth/AuthLayout'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
@@ -25,6 +25,7 @@ const App = () => {
 
     const { isAuthenticated, user, isLoading } = useSelector(state => state.auth);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token =  JSON.parse(sessionStorage.getItem('token'))
@@ -37,6 +38,8 @@ const App = () => {
         <div className='flex flex-col overflow-hidden bg-white'>
 
             <Routes>
+            <Route path="/" element={
+                    isAuthenticated ? <Navigate to="/shop/home" /> : <Navigate to="/auth/login" />}></Route>
 
                 <Route path='/auth' element={
                     <CheckAuth isAuthenticated={isAuthenticated} user={user}>
@@ -68,7 +71,6 @@ const App = () => {
                 </Route>
 
                 <Route path='/unauth-page' element={<UnauthPage />} />
-                <Route path='*' element={<NotFound />} />
             </Routes>
 
         </div>
