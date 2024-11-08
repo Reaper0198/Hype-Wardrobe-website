@@ -20,7 +20,19 @@ const Login = () => {
 
     const onSubmit = (e) =>{
         e.preventDefault();
-
+        if(formData.email === '' || formData.password === ''){
+            toast.success("Invalid details", {
+                position: "top-right",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
         dispatch(loginUser(formData)).then((data) =>{
             if(data?.payload?.success){
                 toast.success(data.payload.message, {
@@ -50,8 +62,12 @@ const Login = () => {
 
   return (
     <div className='mx-auto w-full max-w-md space-y-6'>
+        <div className=' lg:hidden flex-col items-center justify-center'>
+            <h1 className='text-4xl font-bold tracking-tight text-foreground text-center'>HypeWardrobe</h1>
+            <h3 className='text-center font-light'>Your one stop for all trendy outfits</h3>
+        </div>
         <div className="text-center">
-            <h1 className='text-3xl font-bold tracking-tight text-foreground'>Sign in to your Account</h1>
+            <h1 className='text-3xl font-semibold tracking-tight text-foreground'>Sign in to your Account</h1>
         </div>
         <CommonForm
         formControls={loginFormControls}

@@ -4,17 +4,17 @@ const User = require('../../models/User')
 //import dotenv from 'dotenv'
 
 // register
-const registerUser = async(req, res) =>{
+const registerUser = async (req, res) => {
 
-    const {userName, email, password} = req.body;
+    const { userName, email, password } = req.body;
 
-    try{
+    try {
 
-        const checkUser = await User.findOne({email});
-        if(checkUser){
+        const checkUser = await User.findOne({ email });
+        if (checkUser) {
             return res.json({
-                success : false,
-                message : "User already exist with this email.Please use different email."
+                success: false,
+                message: "User already exist with this email.Please use different email."
 
             })
         }
@@ -23,19 +23,19 @@ const registerUser = async(req, res) =>{
         const newUser = new User({
             userName,
             email,
-            password : hashPassword
+            password: hashPassword
         })
         await newUser.save();
         res.status(200).json({
-            success : true,
-            message : "New Account Created Successfully"
+            success: true,
+            message: "New Account Created Successfully"
         })
 
-    }catch(e){
+    } catch (e) {
         console.log(e);
         res.status(500).json({
-            success : false,
-            message : "Some Error Occured"
+            success: false,
+            message: "Some Error Occured"
         });
     }
 }
@@ -43,62 +43,76 @@ const registerUser = async(req, res) =>{
 
 
 // login 
-const loginUser = async(req, res) =>{
+const loginUser = async (req, res) => {
 
-    const { email, password} = req.body;
+    const { email, password } = req.body;
 
-    try{
+    try {
 
-        const checkUser = await User.findOne({email});
-        if(!checkUser){
+        const checkUser = await User.findOne({ email });
+        if (!checkUser) {
             return res.json({
-                success : false,
-                message : "User doesn't exist.Please create a account first."
+                success: false,
+                message: "User doesn't exist.Please create a account first."
             })
         }
 
         const checkPasswordMatch = await bcrypt.compare(password, checkUser.password);
-        if(!checkPasswordMatch){
+        if (!checkPasswordMatch) {
             return res.json({
-                success : false,
-                message : "Incorrect Password. Please try again."
+                success: false,
+                message: "Incorrect Password. Please try again."
             })
         }
         const token = jwt.sign({
-            id : checkUser._id,
-            role : checkUser.role,
-            email : checkUser.email,
-            userName : checkUser.userName,
-        },process.env.JWT_SECRET, {expiresIn : '60m'})
+            id: checkUser._id,
+            role: checkUser.role,
+            email: checkUser.email,
+            userName: checkUser.userName,
+        }, process.env.JWT_SECRET, { expiresIn: '60m' })
 
-        res.cookie('token', token, {httpOnly : true, secure : false}).json({
-            success : true,
-            message : 'Logged In successfully',
-            user : {
-                email : checkUser.email,
-                role : checkUser.role,
-                id : checkUser._id,
-                userName : checkUser.userName,
+        // res.cookie('token', token, {httpOnly : true, secure : true}).json({
+        //     success : true,
+        //     message : 'Logged In successfully',
+        //     user : {
+        //         email : checkUser.email,
+        //         role : checkUser.role,
+        //         id : checkUser._id,
+        //         userName : checkUser.userName,
+        //     }
+        // })
+
+        res.json({
+            success: true,
+            message: "Logged in successfully",
+            token,
+            user: {
+                email: checkUser.email,
+                role: checkUser.role,
+                id: checkUser._id,
+                userName: checkUser.userName,
             }
         })
+    
 
-    }catch(e){
-        console.log(e);
-        res.status(500).json({
-            success : false,
-            message : "Some Error Occured"
-        });
-    }
+
+} catch (e) {
+    console.log(e);
+    res.status(500).json({
+        success: false,
+        message: "Some Error Occured"
+    });
+}
 }
 
 
 
 // logout
 
-const logoutUser = (req, res) =>{
+const logoutUser = (req, res) => {
     res.clearCookie('token').json({
-        success : true,
-        message : 'Logged out successfully!'
+        success: true,
+        message: 'Logged out successfully!'
     })
 }
 
@@ -106,29 +120,55 @@ const logoutUser = (req, res) =>{
 
 // Auth Middleware
 
-const authMiddleware = async(req, res, next) =>{
-    const token = req.cookies.token;
+// const authMiddleware = async (req, res, next) => {
+//     const token = req.cookies.token;
 
-    if(!token){
+//     if (!token) {
+//         return res.status(401).json({
+//             success: false,
+//             message: 'Unauthorised user!'
+//         })
+//     }
+
+//     try {
+//         const decoded = jwt.verify(token, process.env.JWT_SECRET)
+//         req.user = decoded;
+//         next();
+
+//     } catch (error) {
+//         res.status(401).json({
+//             success: false,
+//             message: 'Unauthorised user!'
+//         })
+//     }
+// }
+
+
+const authMiddleware = async (req, res, next) => {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (!token) {
         return res.status(401).json({
-            success : false,
-            message : 'Unauthorised user!'
+            success: false,
+            message: 'Unauthorised user!'
         })
     }
 
-    try{
+    try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         req.user = decoded;
         next();
 
-    }catch(error){
+    } catch (error) {
         res.status(401).json({
-            success : false,
-            message : 'Unauthorised user!'
+            success: false,
+            message: 'Unauthorised user!'
         })
     }
 }
 
 
 
-module.exports =  { registerUser, loginUser, logoutUser, authMiddleware };
+
+module.exports = { registerUser, loginUser, logoutUser, authMiddleware };
