@@ -47,7 +47,7 @@ const ShopingProductCard = ({product, handleGetProductDetails, handleAddToCart})
                                             progress: undefined,
                                             theme: "light",
                                             });
-                    }} className='w-full'>Add to Card</Button>
+                    }} className='w-full'>Add to Cart</Button>
                 </div>
             </CardFooter>
     </Card>
